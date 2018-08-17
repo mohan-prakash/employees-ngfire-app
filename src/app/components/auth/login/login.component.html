@@ -1,0 +1,30 @@
+<div class="login-form">
+  <form action="" method="post" #formCtrl="ngForm">
+    <div class="avatar">
+      <img src="assets/images/avatar.png" alt="Avatar" />
+    </div>
+    <h2 class="text-center">Member Login</h2>
+    <div class="social-btn text-center">
+      <a [routerLink]="" (click)="signInWithGoogle()" class="btn btn-danger btn-block btn-lg">
+        <i class="fa fa-google"></i> Sign in with
+        <b>Google</b>
+      </a>
+    </div>
+    <div class="or-seperator">
+      <i>or</i>
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" [(ngModel)]="user.email" name="email" placeholder="Username" required="required">
+    </div>
+    <div class="form-group">
+      <input type="password" class="form-control" [(ngModel)]="user.password" name="password" placeholder="Password" required="required">
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary btn-lg btn-block login-btn" (click)="signInWithEmail()" [disabled]="formCtrl.form.invalid">Sign in</button>
+    </div>
+  </form>
+  <p class="text-center small">
+    <b>User: </b> <i>admin@admin.com</i> and 
+    <b>Password: </b> <i>adminuser</i>
+  </p>
+</div>

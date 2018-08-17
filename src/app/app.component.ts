@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
+
 
 @Component({
   selector: 'app-root',
@@ -6,5 +9,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'customer-ngfire-check';
+  title = 'Angular Firebase App';
+  displayName: string;
+
+  constructor(
+    public authService: AuthService,
+    private router: Router) {
+      if (authService.isLoggedIn()) {
+        this.displayName = authService.userDisplayName;
+        router.navigate(['/home']);
+      }
+    }
 }
