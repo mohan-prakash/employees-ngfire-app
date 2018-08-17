@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
           });
         }, error => {
           console.log(`Login error:  ${error}`);
-          this.notifier.notify('error', `Login failed!! ${error}`);
+          this.notifier.notify('error', `Login failed!!  ${error}`);
           this.router.navigate(['/login']);
         });
   }
@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/home']);
       }, error => {
         console.log(`Login error:  ${error}`);
-        this.notifier.notify('error', `Login failed!! ${error}`);
+        this.notifier.notify('error', `Login failed!!  ${error}`);
         this.router.navigate(['/login']);
       });
   }
