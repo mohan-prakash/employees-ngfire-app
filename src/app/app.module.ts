@@ -17,9 +17,6 @@ import { NotifierModule } from 'angular-notifier';
 
 import { LoginComponent } from './components/auth/login/login.component';
 import { EmployeesComponent } from './components/employees/employees.component';
-import { AddEmployeeComponent } from './components/employees/add-employee/add-employee.component';
-import { EditEmployeeComponent } from './components/employees/edit-employee/edit-employee.component';
-import { DeleteEmployeeComponent } from './components/employees/delete-employee/delete-employee.component';
 import { EmployeeComponent } from './components/employees/employee/employee.component';
 
 @NgModule({
@@ -28,9 +25,6 @@ import { EmployeeComponent } from './components/employees/employee/employee.comp
     NavbarComponent,
     LoginComponent,
     EmployeesComponent,
-    AddEmployeeComponent,
-    EditEmployeeComponent,
-    DeleteEmployeeComponent,
     EmployeeComponent
   ],
   imports: [
