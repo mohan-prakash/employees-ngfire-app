@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, Output, EventEmitter, ViewChildren, QueryList } from '@angular/core';
 
 import { EmployeeService } from '../../../services/employee.service';
 import { Employee } from '../../../models/employee.model';
