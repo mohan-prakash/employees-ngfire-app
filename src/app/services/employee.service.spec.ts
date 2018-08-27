@@ -87,7 +87,7 @@ describe('EmployeeService', () => {
       let employeesRef: AngularFireList<Employee>;
       // let employees: Array<Employee>;
       employeesRef = service.getEmployees();
-      console.log(employeesRef);
+      // console.log(employeesRef);
       expect(employeesRef).not.toBeNull();
       // employeesRef.valueChanges().subscribe(list => {
       //   employees = list;

@@ -20,6 +20,7 @@ import { EmployeesComponent } from './components/employees/employees.component';
 import { AddEmployeeComponent } from './components/employees/add-employee/add-employee.component';
 import { EditEmployeeComponent } from './components/employees/edit-employee/edit-employee.component';
 import { DeleteEmployeeComponent } from './components/employees/delete-employee/delete-employee.component';
+import { EmployeeComponent } from './components/employees/employee/employee.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { DeleteEmployeeComponent } from './components/employees/delete-employee/
     EmployeesComponent,
     AddEmployeeComponent,
     EditEmployeeComponent,
-    DeleteEmployeeComponent
+    DeleteEmployeeComponent,
+    EmployeeComponent
   ],
   imports: [
     BrowserModule,

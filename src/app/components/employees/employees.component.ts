@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 
 import { EmployeeService } from '../../services/employee.service';
 import { Employee } from '../../models/employee.model';
+import { ActionType } from '../../models/enums.model';
 
 @Component({
   selector: 'app-employees',
@@ -13,6 +14,8 @@ import { Employee } from '../../models/employee.model';
 export class EmployeesComponent implements OnInit {
   employees: Array<Employee>;
   selectedEmployee: Employee;
+  actionType = ActionType;
+  action = ActionType.Edit;
 
   constructor(
     private employeeService: EmployeeService,
@@ -45,6 +48,21 @@ export class EmployeesComponent implements OnInit {
       location: employee.location,
       salary: employee.salary
     };
+  }
+
+  onAddEmployeeInit() {
+    this.selectedEmployee = {
+      uid: null,
+      name: '',
+      designation: '',
+      email: '',
+      location: '',
+      salary: 0
+    };
+  }
+
+  setAction(action: ActionType) {
+    this.action = action;
   }
 
   onNotify(message: string): void {

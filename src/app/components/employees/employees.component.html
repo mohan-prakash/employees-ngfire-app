@@ -9,7 +9,7 @@
           </h2>
         </div>
         <div class="col-sm-6">
-          <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal">
+          <a href="#employeeFormModal" (click)="onAddEmployeeInit(); setAction(actionType.Add);" class="btn btn-success" data-toggle="modal">
             <i class="material-icons">&#xE147;</i>
             <span>Add New Employee</span>
           </a>
@@ -38,10 +38,10 @@
               <td>{{employee.location}}</td>
               <td>{{employee.salary}}</td>
               <td>
-                <a href="#editEmployeeModal" (click)="onRowSelected(employee)" class="edit" data-toggle="modal">
+                <a href="#employeeFormModal" (click)="onRowSelected(employee); setAction(actionType.Edit);" class="edit" data-toggle="modal">
                   <i class="material-icons" data-toggle="tooltip" title="Edit">create</i>
                 </a>
-                <a href="#deleteEmployeeModal" (click)="onRowSelected(employee)" class="delete" data-toggle="modal">
+                <a href="#deleteEmployeeModal" (click)="onRowSelected(employee); setAction(actionType.Delete);" class="delete" data-toggle="modal">
                   <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
                 </a>
               </td>
@@ -51,8 +51,9 @@
   </div>
 </div>
 <!-- Add Employee Modal HTML Container -->
-<app-add-employee (notify)="onNotify($event)"></app-add-employee>
+<app-employee [employee]="selectedEmployee" [action]="action" (notify)="onNotify($event)"></app-employee>
+<!-- <app-add-employee (notify)="onNotify($event)"></app-add-employee> -->
 <!-- Edit Modal HTML Container -->
-<app-edit-employee [employee]="selectedEmployee" (notify)="onNotify($event)"></app-edit-employee>
+<!-- <app-edit-employee [employee]="selectedEmployee" (notify)="onNotify($event)"></app-edit-employee> -->
 <!-- Delete Modal HTML Container -->
-<app-delete-employee [employee]="selectedEmployee" (notify)="onNotify($event)"></app-delete-employee>
+<!-- <app-delete-employee [employee]="selectedEmployee" (notify)="onNotify($event)"></app-delete-employee> -->
