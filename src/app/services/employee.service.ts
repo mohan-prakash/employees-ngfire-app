@@ -1,42 +1,35 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
+import { environment } from './../../environments/environment';
 import { Employee} from '../models/employee.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeeService {
-  employees: AngularFireList<any>;
+  employees: Employee[];
+  private apiUrl = environment.apiUrl;
 
-  constructor(private firebase: AngularFireDatabase) { }
+  constructor(private http: HttpClient) { }
 
-  getEmployees() {
-    this.employees = this.firebase.list('employees');
-    return this.employees;
+  getEmployees(): Observable<Employee[]> {
+    return this.http
+      .get<Employee[]>(`${this.apiUrl}/employees`);
   }
 
-  addEmployee(employee: Employee) {
-    this.employees.push({
-      name: employee.name,
-      designation: employee.designation,
-      email: employee.email,
-      location: employee.location,
-      salary: employee.salary
-    });
+  addEmployee(employee: Employee): Observable<any> {
+    return this.http
+      .post<Employee>(`${this.apiUrl}/employee`, employee);
   }
 
-  updateEmployee(employee: Employee) {
-    this.employees.update(employee.uid, {
-      name: employee.name,
-      designation: employee.designation,
-      email: employee.email,
-      location: employee.location,
-      salary: employee.salary
-    });
+  updateEmployee(employee: Employee): Observable<any> {
+    return this.http
+      .put(`${this.apiUrl}/employee/${employee.uid}`, employee);
   }
 
-  deleteEmployee(uid: string) {
-    this.employees.remove(uid);
+  deleteEmployee(uid: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/employee/${uid}`);
   }
 }

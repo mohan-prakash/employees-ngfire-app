@@ -33,18 +33,31 @@ export class EmployeeComponent implements OnInit {
   }
 
   onSubmit() {
+    if (this.action === ActionType.Add) {
+      this.employeeService.addEmployee(this.employee).subscribe(_ => {
+        this.onSaveComplete();
+        this.onAddOrEditComplete();
+      });
+    } else if (this.action === ActionType.Edit) {
+      this.employeeService.updateEmployee(this.employee).subscribe(_ => {
+        this.onSaveComplete();
+        this.onAddOrEditComplete();
+      });
+    }
+    return true;
+  }
+
+  private onSaveComplete() {
     let notificationMessage = '';
     if (this.action === ActionType.Add) {
-      this.employeeService.addEmployee(this.employee);
       notificationMessage = 'added!';
     } else if (this.action === ActionType.Edit) {
-      this.employeeService.updateEmployee(this.employee);
       notificationMessage = 'edited!';
+    } else if (this.action === ActionType.Delete) {
+      notificationMessage = 'deleted!';
     }
     this.notify.emit(notificationMessage);
     this.closeModal();
-    this.onAddOrEditComplete();
-    return true;
   }
 
   private onAddOrEditComplete() {
@@ -59,9 +72,9 @@ export class EmployeeComponent implements OnInit {
   }
 
   onDelete() {
-    this.employeeService.deleteEmployee(this.employee.uid);
-    this.notify.emit('deleted!');
-    this.closeModal();
+    this.employeeService.deleteEmployee(this.employee.uid).subscribe(_ => {
+      this.onSaveComplete();
+    });
     return true;
   }
 

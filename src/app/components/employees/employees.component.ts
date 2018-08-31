@@ -12,7 +12,7 @@ import { ActionType } from '../../models/enums.model';
   styleUrls: ['./employees.component.css']
 })
 export class EmployeesComponent implements OnInit {
-  employees: Array<Employee>;
+  employees: Array<Employee> = [];
   selectedEmployee: Employee;
   actionType = ActionType;
   action = ActionType.Edit;
@@ -27,11 +27,7 @@ export class EmployeesComponent implements OnInit {
   }
 
   getEmployees() {
-    this.employeeService.getEmployees().snapshotChanges().pipe(
-      map(changes =>
-        changes.map(e => ({ uid: e.payload.key, ...e.payload.val() }))
-      )
-    ).subscribe(employees => {
+    this.employeeService.getEmployees().subscribe(employees => {
       this.employees = employees;
       if (this.employees.length > 0) {
         this.notifier.notify('success', 'Employees list loaded | refreshed!');
@@ -75,5 +71,10 @@ export class EmployeesComponent implements OnInit {
       }
       this.notifier.notify(messageType, `Employee "${this.selectedEmployee.name}" record successfully ${message}`);
     }
+    this.refresh();
+  }
+
+  refresh() {
+    this.getEmployees();
   }
 }

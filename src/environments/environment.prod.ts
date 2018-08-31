@@ -7,5 +7,6 @@ export const environment = {
     projectId: 'employees-ngfire-app',
     storageBucket: 'employees-ngfire-app.appspot.com',
     messagingSenderId: '810434383384'
-  }
+  },
+  apiUrl: 'http://localhost:3000/api'
 };
