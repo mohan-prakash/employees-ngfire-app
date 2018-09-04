@@ -1,12 +1,12 @@
-import { TestBed, inject } from '@angular/core/testing';
-
-import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
+import { TestBed, inject, async } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Observable, of, from } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { EmployeeService } from './employee.service';
 import { Employee } from '../models/employee.model';
+import { environment } from '../../environments/environment';
 
-const fixtureEmployees = [
+const fixtureEmployees: Employee[] = [
   {
     uid: '1',
     name: 'Thomas Hardy',
@@ -48,61 +48,137 @@ const fixtureEmployees = [
     salary: 18000
   }
 ];
-export class AngularFireDatabaseMock {
-  list(query: string): any {
-      return {
-          valueChanges() {
-              return of(fixtureEmployees);
-          }
-      };
-  }
-  valueChanges(): any {
-    return {
-      valueChanges() {
-        return of(fixtureEmployees);
-    }
-    };
-  }
-}
-// let angularFireDatabaseStub = { list: () => {} };
-const angularFireDatabaseStub = new AngularFireDatabaseMock();
+
 const mockEmployees$ = of(fixtureEmployees);
 
 describe('EmployeeService', () => {
+
   beforeEach(() => {
-    spyOn(angularFireDatabaseStub, 'list').and.returnValue(mockEmployees$);
-    spyOn(angularFireDatabaseStub, 'valueChanges').and.returnValue(mockEmployees$);
     TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule
+      ],
       providers: [
-        EmployeeService,
-        {provide: AngularFireDatabase, useValue: angularFireDatabaseStub}]
+        EmployeeService
+      ]
     });
   });
 
-  it('should be created', inject([EmployeeService], (service: EmployeeService) => {
-    expect(service).toBeTruthy();
+  afterEach(inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    httpMock.verify();
   }));
 
-  it('#getEmployees', inject([EmployeeService], (service: EmployeeService) => {
-      let employeesRef: AngularFireList<Employee>;
-      // let employees: Array<Employee>;
-      employeesRef = service.getEmployees();
-      // console.log(employeesRef);
-      expect(employeesRef).not.toBeNull();
-      // employeesRef.valueChanges().subscribe(list => {
-      //   employees = list;
-      //   expect(employees[0].name).toEqual(fixtureEmployees[0].name);
-      //   expect(employees[0]).toEqual(jasmine.any(Employee));
-      // });
-
-      // employeesRef.snapshotChanges().subscribe(item => {
-      //       employees = [];
-      //       item.forEach(element => {
-      //         let y = element.payload.toJSON();
-      //         y['uid'] = element.key;
-      //         employees.push(y as Employee);
-      //       });
-      //       console.log(employees);
-      //     });
+  it('#service should be created', inject([EmployeeService], (employeeService: EmployeeService) => {
+    expect(employeeService).toBeTruthy();
   }));
+
+  it('#should get employees', async(inject([EmployeeService, HttpTestingController],
+    (
+      employeeService: EmployeeService,
+      httpMock: HttpTestingController
+    ) => {
+      employeeService.getEmployees().subscribe(
+        (result) => {
+          expect(result).toEqual(fixtureEmployees);
+          expect(result.length).toBe(5);
+          expect(result[0].designation).toEqual('Developer');
+        },
+        (error: any) => {
+          console.log(`error on get: ${error}`);
+        }
+      );
+      const mockReq = httpMock.expectOne(`${environment.apiUrl}/employees`);
+      expect(mockReq.cancelled).toBeFalsy();
+      expect(mockReq.request.method).toEqual('GET');
+      expect(mockReq.request.responseType).toEqual('json');
+      mockReq.flush(fixtureEmployees);
+      httpMock.verify();
+    }))
+  );
+
+  it('#should add employee', async(inject([EmployeeService, HttpTestingController],
+    (
+      employeeService: EmployeeService,
+      httpMock: HttpTestingController
+    ) => {
+      const newEmployee: Employee = {
+        uid: null,
+        name: 'Mohan',
+        designation: 'Developer',
+        email: 'mohan@mail.com',
+        location: 'Aegonplein 50, 2591 TV, Den Haag',
+        salary: 16000
+      };
+      employeeService.addEmployee(newEmployee).subscribe(
+        (data) => {
+          expect(data).toEqual(jasmine.any(Object));
+          expect(data.result).toEqual('6');
+        },
+        (error: any) => {
+          console.log(`error on post: ${error}`);
+        }
+      );
+      const mockReq = httpMock.expectOne(`${environment.apiUrl}/employee`);
+      expect(mockReq.cancelled).toBeFalsy();
+      expect(mockReq.request.method).toEqual('POST');
+      expect(mockReq.request.responseType).toEqual('json');
+      mockReq.flush({result: '6'});
+      httpMock.verify();
+    }))
+  );
+
+  it('#should update employee', async(inject([EmployeeService, HttpTestingController],
+    (
+      employeeService: EmployeeService,
+      httpMock: HttpTestingController
+    ) => {
+      const employee: Employee = {
+        uid: '6',
+        name: 'Mohan',
+        designation: 'Developer',
+        email: 'mohan@mail.com',
+        location: 'Aegonplein 50, 2591 TV, Den Haag',
+        salary: 17000
+      };
+      employeeService.updateEmployee(employee).subscribe(
+        (data) => {
+          expect(data).toBeNull();
+          expect(data).toBeFalsy();
+        },
+        (error: any) => {
+          console.log(`error on update: ${error}`);
+        }
+      );
+      const mockReq = httpMock.expectOne(`${environment.apiUrl}/employee/${employee.uid}`);
+      expect(mockReq.cancelled).toBeFalsy();
+      expect(mockReq.request.method).toEqual('PUT');
+      expect(mockReq.request.responseType).toEqual('json');
+      mockReq.flush(null, { status: 204, statusText: 'No Content' });
+      httpMock.verify();
+    }))
+  );
+
+  it('#should delete employee', async(inject([EmployeeService, HttpTestingController],
+    (
+      employeeService: EmployeeService,
+      httpMock: HttpTestingController
+    ) => {
+      const employeeUid = '5';
+      employeeService.deleteEmployee(employeeUid).subscribe(
+        (data) => {
+          expect(data).toBeNull();
+          expect(data).toBeFalsy();
+        },
+        (error: any) => {
+          console.log(`error on delete: ${error}`);
+        }
+      );
+      const mockReq = httpMock.expectOne(`${environment.apiUrl}/employee/${employeeUid}`);
+      expect(mockReq.cancelled).toBeFalsy();
+      expect(mockReq.request.method).toEqual('DELETE');
+      expect(mockReq.request.responseType).toEqual('json');
+      mockReq.flush(null, { status: 204, statusText: 'No Content' });
+      httpMock.verify();
+    }))
+  );
 });
